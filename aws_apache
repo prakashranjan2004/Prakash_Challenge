@@ -1,0 +1,78 @@
+#Terraform code to launch ec2 instance and open ports 22, 80, and 443:-
+
+provider "aws" {
+  access_key = “——“
+  secret_key = “——“
+  region     = "us-east-1"
+}
+
+resource "aws_instance" "example22" {
+  ami           = "ami-b374d5a5"
+  instance_type = "t2.micro"
+}
+resource "aws_security_group" "allow_ssh" {
+    name = "allow_all"
+    description = "Allow inbound SSH traffic from my IP"
+    vpc_id = "vpc-9810ade2"
+
+    ingress {
+        from_port = 22
+        to_port = 22
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    ingress {
+        from_port = 80
+        to_port = 80
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+    ingress {
+        from_port = 443
+        to_port = 443
+        protocol = "tcp"
+        cidr_blocks = ["0.0.0.0/0"]
+    }
+}
+
+terraform plan
+terraform apply
+
+Ansible playbook installs httpd and starts it. Then it creates directory named “test” inside /var/ww/html and a file inside test named “hello.html”. After creation of file, it write html code to it.:-
+
+---
+- hosts: <hostname>
+  become: yes
+  tasks:
+      - name: Update using Yum
+        become: yes
+        yum:
+           name: "httpd"
+           state: latest
+           service: name=httpd enabled=yes
+                        service: name=httpd state=restarted
+      - name: Create a directory and file with html extension
+        file: path=/var/www/html/test state=directory owner=root group=root mode=0755
+      - pause:
+          seconds: 10
+      - name: Create file
+        file: path=/var/www/html/test/hello.html state=touch owner=root group=root mode=0755
+      - pause:
+          seconds: 10
+      - name: Block in file
+        blockinfile:
+          path: /var/www/html/test/hello.html
+          block: |
+            <html>
+            <head>
+            <title>Hello World</title>
+            </head>
+            <body>
+            <h1>Hello World!</h1>
+            </body>
+            </html>
+          marker: ""
+
+After this open a browser and type following:-
+
+http://<FQDN>/test/hello.html
