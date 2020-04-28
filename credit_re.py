@@ -1,5 +1,6 @@
 #Note:-
 # to test git on 04282020
+# to test git on 04282020_2
 # Condition - "It must NOT have 4 or more consecutive repeated digits" is not satsfied with this program. 
 # To satisfy above condition, need other program. With the help of google I found some program and after some tweakings
 # that's working as well for me. Not sharing that because it's not my original work.
